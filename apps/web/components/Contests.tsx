@@ -13,7 +13,7 @@ export async function Contests() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* {upcomingContests.map((contest) => (
+            {/* {upcomingContests.map((contest: any) => (
               <ContestCard
                 key={contest.id}
                 title={contest.title}
@@ -34,7 +34,7 @@ export async function Contests() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-             {/* {pastContests.map((contest) => (
+             {/* {pastContests.map((contest: any) => (
               <ContestCard
                 key={contest.id}
                 title={contest.title}
