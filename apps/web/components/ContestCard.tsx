@@ -5,7 +5,6 @@ import {
   CardContent,
   CardFooter,
 } from "@repo/ui/card";
-import Link from "next/link";
 import { PrimaryButton } from "./LinkButton";
 
 interface ContestCardParams {

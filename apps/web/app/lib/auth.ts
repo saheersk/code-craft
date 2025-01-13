@@ -1,7 +1,7 @@
-import NextAuth, { Session } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
+import NextAuth, { Session } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 import { db } from "../db";
-import { JWT } from 'next-auth/jwt';
+import { JWT } from "next-auth/jwt";
 
 export interface session extends Session {
   user: {
@@ -9,7 +9,7 @@ export interface session extends Session {
     jwtToken: string;
     email: string;
     name: string;
-    googleId: string; 
+    googleId: string;
   };
 }
 interface User {
@@ -17,7 +17,7 @@ interface User {
   name: string;
   email: string;
   token: string;
-  googleId: string; 
+  googleId: string;
 }
 
 export const authOptions: any = {
@@ -28,24 +28,14 @@ export const authOptions: any = {
     }),
   ],
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
   callbacks: {
-    async session({ session, user }: { session: session; user: User }) {
-      console.log(session, "=====session", user, "======user======");
-      // if (session?.user) {
-      //   session.user.id = user.id;
-      //   session.user.email = user.email;
-      //   session.user.name = user.name;
-      //   session.user.googleId = user.googleId;
-      // }
-      
+    async session({ session }: { session: session }) {
       return session;
     },
-    async jwt({ token, user }: { token: JWT; user: User}) {
+    async jwt({ token, user }: { token: JWT; user: User }) {
       if (user) {
-      console.log(token,"======token======", user, "======token======");
-
         if (!user.id) {
           console.error("Google ID is missing from the user object.");
           return token;
@@ -58,7 +48,7 @@ export const authOptions: any = {
         });
 
         if (!existingUser) {
-            await db.user.create({
+          await db.user.create({
             data: {
               email: user.email,
               name: user.name,
@@ -67,12 +57,11 @@ export const authOptions: any = {
           });
         }
 
-          token.id = user?.id;
-          token.email = user.email;
-          token.name = user.name;
+        token.id = user?.id;
+        token.email = user.email;
+        token.name = user.name;
       }
       return token;
     },
   },
 };
-
