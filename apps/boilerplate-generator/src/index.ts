@@ -68,7 +68,7 @@ function generateFullBoilerPLate(generatorFilePath: string) {
     fs.writeFileSync(path.join(boilerplatePath, "function.rs"), rustCode);
   
     console.log("Boilerplate code generated successfully!");
-  }
+}
   
   generatePartialBoilerplate(process.env.GENERATOR_FILE_PATH ?? "");
   generateFullBoilerPLate(process.env.GENERATOR_FILE_PATH ?? "");
