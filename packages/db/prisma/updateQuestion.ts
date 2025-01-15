@@ -3,19 +3,19 @@ import fs from "fs";
 import { prismaClient } from "../src";
 
 const MOUNT_PATH = process.env.MOUNT_PATH ?? "../../apps/problems";
-function promisifedReadFile(path: string): Promise<string> {
+function promisifiedReadFile(path: string): Promise<string> {
   return new Promise((resolve, reject) => {
     fs.readFile(path, "utf8", (err, data) => {
       if (err) {
-        reject(err);
+        reject(new Error(`Failed to read file at ${path}: ${err.message}`));
       }
       resolve(data);
     });
   });
 }
 
-async function main(problemSlug: string, problemTitle: string) {
-  const problemStatement = await promisifedReadFile(
+async function main(problemSlug: string) {
+  const problemStatement = await promisifiedReadFile(
     `${MOUNT_PATH}/${problemSlug}/Problem.md`,
   );
 
@@ -35,7 +35,7 @@ async function main(problemSlug: string, problemTitle: string) {
 
   await Promise.all(
     Object.keys(LANGUAGE_MAPPING).map(async (language) => {
-      const code = await promisifedReadFile(
+      const code = await promisifiedReadFile(
         `${MOUNT_PATH}/${problemSlug}/boilerplate/function.${language}`,
       );
       await prismaClient.defaultCode.upsert({
@@ -58,4 +58,4 @@ async function main(problemSlug: string, problemTitle: string) {
   );
 }
 
-main(process.env.PROBLEM_SLUG!, process.env.PROBLEM_TITLE!);
+main(process.env.PROBLEM_SLUG!);
