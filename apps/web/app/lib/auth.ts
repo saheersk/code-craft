@@ -31,7 +31,13 @@ export const authOptions: any = {
     strategy: "jwt",
   },
   callbacks: {
-    async session({ session }: { session: session }) {
+    async session({ session, token }: { session: any; token: JWT }) {
+      // console.log(session, "=========sessssion", token, "=======user")
+      if (token) {
+        session.user.id = token.id; // Add the `id` from the token to the session
+        session.user.email = token.email;
+        session.user.name = token.name;
+      }
       return session;
     },
     async jwt({ token, user }: { token: JWT; user: User }) {
@@ -41,14 +47,17 @@ export const authOptions: any = {
           return token;
         }
 
-        const existingUser = await db.user.findUnique({
+        let userData: any = null;
+        // console.log(user, "==================user=====jwt")
+        userData = await db.user.findUnique({
           where: {
             googleId: user.id,
           },
         });
 
-        if (!existingUser) {
-          await db.user.create({
+        console.log(userData, "==================existingUser=====jwt")
+        if (!userData) {
+          userData = await db.user.create({
             data: {
               email: user.email,
               name: user.name,
@@ -57,9 +66,9 @@ export const authOptions: any = {
           });
         }
 
-        token.id = user?.id;
-        token.email = user.email;
-        token.name = user.name;
+        token.id = userData?.id;
+        token.email = userData.email;
+        token.name = userData.name;
       }
       return token;
     },
