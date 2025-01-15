@@ -17,7 +17,7 @@ export async function Contests() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            //TODO: add the correct type
+            {/* // TODO: add the correct type */}
             {upcomingContests.map((contest: any) => (
               <ContestCard
                 key={contest.id}
@@ -39,7 +39,7 @@ export async function Contests() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            //TODO: add the correct type
+            {/* // TODO: add the correct type */}
             {pastContests.map((contest: any) => (
               <ContestCard
                 key={contest.id}
