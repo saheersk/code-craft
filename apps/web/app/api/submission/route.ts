@@ -75,10 +75,12 @@ export async function POST(req: NextRequest) {
         expected_output: problem.outputs[index],
         callback_url:
           process.env.JUDGE0_CALLBACK_URL ??
-          "https://localhost:3000/submission-callback",
+          "http://localhost:3002/submission-callback",
       })),
     },
   );
+
+  console.log(response, "response.data=============");
 
   const submission = await db.submission.create({
     data: {

@@ -6,8 +6,8 @@ export const SubmissionCallback = z.object({
   memory: z.number().optional().nullable(),
   stderr: z.string().nullable().optional().nullable(),
   token: z.string(),
-  compile_output: z.string().nullable(),
-  message: z.string().nullable(),
+  compile_output: z.string().nullable().optional(),
+  message: z.string().nullable().optional(),
   status: z.object({
     id: z.number(),
     description: z.enum([
