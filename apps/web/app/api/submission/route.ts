@@ -8,10 +8,23 @@ import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 
+
+interface User {
+  id: string;
+  email: string;
+  image?: string;
+  name: string;
+}
+
+interface Session {
+  user?: User;
+}
+
 // TODO: This should be heavily rate limited
 export async function POST(req: NextRequest) {
   // TODO: type
-  const session: any = await getServerSession(authOptions);
+  //@ts-ignore
+  const session: Session | null = await getServerSession(authOptions);
   console.log(session, "=====================session");
   if (!session?.user) {
     return NextResponse.json(
@@ -115,7 +128,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const session: any = await getServerSession(authOptions);
+  const session: Session | null = await getServerSession(authOptions);
+  console.log(session, "====session===")
   if (!session?.user) {
     return NextResponse.json(
       {

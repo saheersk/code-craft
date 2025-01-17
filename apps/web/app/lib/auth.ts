@@ -3,21 +3,12 @@ import GoogleProvider from "next-auth/providers/google";
 import { db } from "../db";
 import { JWT } from "next-auth/jwt";
 
-export interface session extends Session {
-  user: {
-    id: string;
-    jwtToken: string;
-    email: string;
-    name: string;
-    googleId: string;
-  };
-}
+
 interface User {
   id: string;
   name: string;
   email: string;
-  token: string;
-  googleId: string;
+  image?: string;
 }
 
 export const authOptions: any = {
@@ -34,9 +25,9 @@ export const authOptions: any = {
     async session({ session, token }: { session: any; token: JWT }) {
       // console.log(session, "=========sessssion", token, "=======user")
       if (token) {
-        session.user.id = token.id; // Add the `id` from the token to the session
-        session.user.email = token.email;
-        session.user.name = token.name;
+        session.user.id = token.id as string; // Explicitly cast if necessary
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
       }
       return session;
     },

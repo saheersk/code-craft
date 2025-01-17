@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
 import { db } from ".";
-import { authOptions, session } from "../lib/auth";
+import { authOptions, } from "../lib/auth";
 
 export const getContest = async (contestId: string) => {
-  const session: session | null = await getServerSession(authOptions);
-  
+  const session: any = await getServerSession(authOptions);
+
   const contest = await db.contest.findFirst({
     where: {
       id: contestId,
