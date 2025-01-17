@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     {
       submissions: problem.inputs.map((input, index) => ({
         language_id: LANGUAGE_MAPPING[submissionInput.data.languageId]?.judge0,
-        source_code: problem.fullBoilerplateCode,
+        source_code: Buffer.from(problem.fullBoilerplateCode).toString('base64'),
         stdin: input,
         expected_output: problem.outputs[index],
         callback_url:
