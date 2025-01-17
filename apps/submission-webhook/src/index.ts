@@ -1,10 +1,12 @@
 import express from "express";
+import cors from "cors";
 import prismaClient from "./db";
 import { SubmissionCallback } from "@repo/common/zod";
 import { outputMapping } from "./outputMapping";
 import { getPoints } from "./points";
 
 const app = express();
+app.use(cors()); 
 app.use(express.json());
 
 app.put("/submission-callback", async (req: any, res: any) => {
