@@ -9,6 +9,12 @@ const app = express();
 app.use(cors()); 
 app.use(express.json());
 
+app.get("/", (req: any, res: any) => {
+  res.status(200).json({
+    message: "Hello, world!",
+  });
+})
+
 app.put("/submission-callback", async (req: any, res: any) => {
   console.log(req.body, "Incoming request body");
   const parsedBody = SubmissionCallback.safeParse(req.body);
