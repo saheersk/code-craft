@@ -47,3 +47,5 @@ env/
 
 # Docker Compose
 docker-compose.override.yml
+
+celery.log
