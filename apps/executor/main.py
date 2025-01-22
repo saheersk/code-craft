@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
-from code.tasks import execute_submission
+from code.tasks import execute_submission                                              
 
 app = FastAPI()
 
@@ -28,23 +28,11 @@ async def root():
 async def receive_submissions(batch_submission: BatchSubmission):
     try:
         # print("Received batch submission:", batch_submission.dict())
-        
-        # Test Celery connection first
-        # try:
-        #     test_result = celery_app.send_task('test_task')
-        #     print("Test task ID:", test_result.id)
-        # except Exception as e:
-        #     print("Celery connection error:", str(e))
-        #     raise HTTPException(
-        #         status_code=503,
-        #         detail=f"Celery connection error: {str(e)}"
-        #     )
-        
-        # task_result = add.delay(4, 6)
-        # print(f"Task result: {task_result}")
         task_ids = []
         for submission in batch_submission.submissions:
-            # print(f"Queuing task for submission: {submission.source_code}") 
+            print(f"Queuing task for submission: {submission.source_code}")
+            print(f"Queuing task for input: {submission.stdin}")
+            print(f"Queuing task for ouput: {submission.expected_output}")
             task = execute_submission.delay(
                 submission.language_id,
                 submission.source_code,
