@@ -6,8 +6,8 @@
 ##USER_CODE_HERE##
 
 int main() {
-  std::cin >> num1;
-  std::cin >> num2;
+  int num1, num2;
+  std::cin >> num1 >> num2;
   int result = sum(num1, num2);
   std::cout << result << std::endl;
   return 0;
