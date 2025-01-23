@@ -74,7 +74,7 @@ class RustExecutor(LanguageExecutor):
             "-v", f"{sandbox_dir}:/sandbox",
             "--memory=128m", "--cpus=0.5",
             "--network=none", "rust:latest",
-            "bash", "-c", f"rustc /sandbox/script.rs -o /sandbox/output && /sandbox/output < /sandbox/input.txt"
+            "bash", "-c", "rustc /sandbox/script.rs -o /sandbox/output && /sandbox/output < /sandbox/input.txt"
         ]
         return subprocess.run(run_command, text=True, capture_output=True, timeout=30)  
 
