@@ -53,9 +53,9 @@ export class FullProblemDefinitionParser {
     const inputReads = this.inputFields
       .map((field) => {
         if (field.type.startsWith("list<")) {
-          return `int size_${field.name};\n  std::cin >> size_${field.name};\n  ${this.mapTypeToCpp(field.type)} ${field.name}(size_${field.name});\n  for(int i = 0; i < size_${field.name}; ++i) std::cin >> ${field.name}[i];`;
+          return `int size_${field.name};\n  std::ifstream inputFile("/sandbox/input.txt");\n  inputFile >> size_${field.name};\n  ${this.mapTypeToCpp(field.type)} ${field.name}(size_${field.name});\n  for(int i = 0; i < size_${field.name}; ++i) inputFile >> ${field.name}[i];`;
         } else {
-          return `std::cin >> ${field.name};`;
+          return `std::ifstream inputFile("/sandbox/input.txt");\n  inputFile >> ${field.name};`;
         }
       })
       .join("\n  ");
@@ -67,6 +67,7 @@ export class FullProblemDefinitionParser {
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
 
 ##USER_CODE_HERE##
 
@@ -77,64 +78,70 @@ int main() {
   return 0;
 }
     `;
-  }
+}
 
-  generateJs(): string {
-    const inputs = this.inputFields.map((field) => field.name).join(", ");
-    const inputReads = this.inputFields
-      .map((field) => {
-        if (field.type.startsWith("list<")) {
-          return `const size_${field.name} = parseInt(input.shift());\nconst ${field.name} = input.splice(0, size_${field.name}).map(Number);`;
-        } else {
-          return `const ${field.name} = parseInt(input.shift());`;
-        }
-      })
-      .join("\n  ");
-    const outputType = this.outputFields[0].type;
-    const functionCall = `const result = ${this.functionName}(${this.inputFields.map((field) => field.name).join(", ")});`;
-    const outputWrite = `console.log(result);`;
 
-    return `
+generateJs(): string {
+  const inputs = this.inputFields.map((field) => field.name).join(", ");
+  const inputReads = this.inputFields
+    .map((field) => {
+      if (field.type.startsWith("list<")) {
+        return `const size_${field.name} = parseInt(input.shift());\nconst ${field.name} = input.splice(0, size_${field.name}).map(Number);`;
+      } else {
+        return `const ${field.name} = parseInt(input.shift());`;
+      }
+    })
+    .join("\n  ");
+  const outputType = this.outputFields[0].type;
+  const functionCall = `const result = ${this.functionName}(${this.inputFields.map((field) => field.name).join(", ")});`;
+  const outputWrite = `console.log(result);`;
+
+  return `
 ##USER_CODE_HERE##
 
-const input = require('fs').readFileSync('/dev/stdin', 'utf8').trim().split('\\n').join(' ').split(' ');
+const input = require('fs').readFileSync('/sandbox/input.txt', 'utf8').trim().split('\\n').join(' ').split(' ');
 ${inputReads}
 ${functionCall}
 ${outputWrite}
-    `;
-  }
+  `;
+}
 
-  generateRust(): string {
-    const inputs = this.inputFields
-      .map((field) => `${field.name}: ${this.mapTypeToRust(field.type)}`)
-      .join(", ");
-    const inputReads = this.inputFields
-      .map((field) => {
-        if (field.type.startsWith("list<")) {
-          return `let size_${field.name}: usize = input.next().unwrap().parse().unwrap();\nlet ${field.name}: ${this.mapTypeToRust(field.type)} = input.take(size_${field.name}).map(|s| s.parse().unwrap()).collect();`;
-        } else {
-          return `let ${field.name}: ${this.mapTypeToRust(field.type)} = input.next().unwrap().parse().unwrap();`;
-        }
-      })
-      .join("\n  ");
-    const outputType = this.mapTypeToRust(this.outputFields[0].type);
-    const functionCall = `let result = ${this.functionName}(${this.inputFields.map((field) => field.name).join(", ")});`;
-    const outputWrite = `println!("{}", result);`;
+generateRust(): string {
+  const inputs = this.inputFields
+    .map((field) => `${field.name}: ${this.mapTypeToRust(field.type)}`)
+    .join(", ");
+  const inputReads = this.inputFields
+    .map((field) => {
+      if (field.type.startsWith("list<")) {
+        return `let size_${field.name}: usize = input.next().unwrap().parse().unwrap();\nlet ${field.name}: ${this.mapTypeToRust(field.type)} = input.take(size_${field.name}).map(|s| s.parse().unwrap()).collect();`;
+      } else {
+        return `let ${field.name}: ${this.mapTypeToRust(field.type)} = input.next().unwrap().parse().unwrap();`;
+      }
+    })
+    .join("\n  ");
+  const outputType = this.mapTypeToRust(this.outputFields[0].type);
+  const functionCall = `let result = ${this.functionName}(${this.inputFields.map((field) => field.name).join(", ")});`;
+  const outputWrite = `println!("{}", result);`;
 
-    return `
+  return `
+use std::fs::File;
 use std::io::{self, BufRead};
+use std::path::Path;
 
 ##USER_CODE_HERE##
 
 fn main() {
-  let stdin = io::stdin();
-  let mut input = stdin.lock().lines().map(|l| l.unwrap());
-  ${inputReads}
-  ${functionCall}
-  ${outputWrite}
+let path = Path::new("/sandbox/input.txt");
+let file = File::open(path).unwrap();
+let reader = io::BufReader::new(file);
+let mut lines = reader.lines();
+${inputReads}
+${functionCall}
+${outputWrite}
 }
-    `;
-  }
+  `;
+}
+
 
   mapTypeToCpp(type: string): string {
     switch (type) {
