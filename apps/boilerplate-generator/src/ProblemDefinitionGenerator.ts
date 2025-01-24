@@ -67,6 +67,11 @@ export class ProblemDefinitionParser {
     return `fn ${this.functionName}(${inputs}) -> ${outputType} {\n    // Implementation goes here\n    result\n}`;
   }
 
+  generatePython(): string {
+    const inputs = this.inputFields.map((field) => field.name).join(", ");
+    return `def ${this.functionName}(${inputs}):\n    """\n    Implementation goes here\n    """\n    result = None\n    return result\n`;
+  }
+
   mapTypeToRust(type: string): string {
     switch (type) {
       case "int":

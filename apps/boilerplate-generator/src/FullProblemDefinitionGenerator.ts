@@ -142,6 +142,31 @@ ${outputWrite}
   `;
 }
 
+generatePython(): string {
+  const inputs = this.inputFields
+    .map((field) => field.name)
+    .join(", ");
+  const inputReads = this.inputFields
+    .map((field) => {
+      if (field.type.startsWith("list<")) {
+        return `${field.name} = list(map(int, input_file.readline().strip().split()))`;
+      } else {
+        return `${field.name} = int(input_file.readline().strip())`;
+      }
+    })
+    .join("\n  ");
+  const functionCall = `result = ${this.functionName}(${this.inputFields.map((field) => field.name).join(", ")})`;
+  const outputWrite = `print(result)`;
+
+  return `
+##USER_CODE_HERE##
+
+with open('/sandbox/input.txt', 'r') as input_file:
+${inputReads}
+${functionCall}
+${outputWrite}
+  `;
+}
 
   mapTypeToCpp(type: string): string {
     switch (type) {

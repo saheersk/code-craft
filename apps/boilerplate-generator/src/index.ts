@@ -21,7 +21,8 @@ function generatePartialBoilerplate(generatorFilePath: string) {
   // Generate the boilerplate code
   const cppCode = parser.generateCpp();
   const jsCode = parser.generateJs();
-  const rustCode = parser.generateRust();
+//   const rustCode = parser.generateRust();
+  const pythonCode = parser.generatePython();
 
   // Ensure the boilerplate directory exists
   if (!fs.existsSync(boilerplatePath)) {
@@ -31,7 +32,8 @@ function generatePartialBoilerplate(generatorFilePath: string) {
   // Write the boilerplate code to respective files
   fs.writeFileSync(path.join(boilerplatePath, "function.cpp"), cppCode);
   fs.writeFileSync(path.join(boilerplatePath, "function.js"), jsCode);
-  fs.writeFileSync(path.join(boilerplatePath, "function.rs"), rustCode);
+//   fs.writeFileSync(path.join(boilerplatePath, "function.rs"), rustCode);
+  fs.writeFileSync(path.join(boilerplatePath, "function.py"), pythonCode);
 
   console.log("Boilerplate code generated successfully!");
 }
@@ -55,7 +57,8 @@ function generateFullBoilerPLate(generatorFilePath: string) {
     // Generate the boilerplate code
     const cppCode = parser.generateCpp();
     const jsCode = parser.generateJs();
-    const rustCode = parser.generateRust();
+    // const rustCode = parser.generateRust();
+    const pythonCode = parser.generatePython();
   
     // Ensure the boilerplate directory exists
     if (!fs.existsSync(boilerplatePath)) {
@@ -65,7 +68,8 @@ function generateFullBoilerPLate(generatorFilePath: string) {
     // Write the boilerplate code to respective files
     fs.writeFileSync(path.join(boilerplatePath, "function.cpp"), cppCode);
     fs.writeFileSync(path.join(boilerplatePath, "function.js"), jsCode);
-    fs.writeFileSync(path.join(boilerplatePath, "function.rs"), rustCode);
+    // fs.writeFileSync(path.join(boilerplatePath, "function.rs"), rustCode);
+    fs.writeFileSync(path.join(boilerplatePath, "function.py"), pythonCode);
   
     console.log("Boilerplate code generated successfully!");
 }
