@@ -57,6 +57,30 @@ class CppExecutor(LanguageExecutor):
         return subprocess.run(run_command, text=True, capture_output=True, timeout=30)
 
 
+class PythonExecutor(LanguageExecutor):
+    def setup_code(self, source_code: str, stdin: str, sandbox_dir: str):
+        # Write the source code to a Python script file
+        script_path = os.path.join(sandbox_dir, "script.py")
+        input_file_path = os.path.join(sandbox_dir, "input.txt")
+
+        with open(script_path, 'w') as f:
+            f.write(source_code)
+
+        # Write the standard input to a file
+        with open(input_file_path, 'w') as f:
+            f.write(stdin.strip())
+
+    def execute(self, sandbox_dir: str) -> subprocess.CompletedProcess:
+        run_command = [
+            "docker", "run", "--rm",
+            "-v", f"{sandbox_dir}:/sandbox",
+            "--memory=128m", "--cpus=0.5",
+            "--network=none", "python:3.11-alpine",
+            "python", "/sandbox/script.py"
+        ]
+        return subprocess.run(run_command, text=True, capture_output=True, timeout=30)
+
+
 class RustExecutor(LanguageExecutor):
     def setup_code(self, source_code: str, stdin: str, sandbox_dir: str):
         script_path = os.path.join(sandbox_dir, "script.rs")
@@ -88,5 +112,7 @@ class LanguageExecutorFactory:
             return CppExecutor()
         elif language_id == 3:  # Rust
             return RustExecutor()
+        elif language_id == 4:  # Python
+            return PythonExecutor()
         else:
             raise ValueError("Unsupported language_id")

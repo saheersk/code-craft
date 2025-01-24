@@ -113,6 +113,7 @@ function SubmitProblem({
       if (!language) return;
       defaultCode[language] = code.code;
     });
+    console.log(defaultCode, "===")
     setCode(defaultCode);
   }, [problem]);
 

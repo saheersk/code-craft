@@ -64,4 +64,7 @@ export const authOptions: any = {
       return token;
     },
   },
+  // pages: {
+  //   signIn: '/auth/signin',
+  // },
 };

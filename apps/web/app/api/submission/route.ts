@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   // TODO: type
   //@ts-ignore
   const session: Session | null = await getServerSession(authOptions);
-  console.log(session, "=====================session");
+  // console.log(session, "=====================session");
   if (!session?.user) {
     return NextResponse.json(
       {
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       },
     );
   }
-
+    console.log(submissionInput, "-==sub")
   const dbProblem = await db.problem.findUnique({
     where: {
       id: submissionInput.data.problemId,
@@ -79,11 +79,11 @@ export async function POST(req: NextRequest) {
   console.log(problem, "=======problem boilerplate===");
 
   const response = await axios.post(
-    `${JUDGE0_URI}/submissions/batch?base64_encoded=false`,
+    `${JUDGE0_URI}/submissions/batch`,
     {
       submissions: problem.inputs.map((input, index) => ({
-        language_id: LANGUAGE_MAPPING[submissionInput.data.languageId]?.judge0,
-        source_code: Buffer.from(problem.fullBoilerplateCode).toString('base64'),
+        language_id: LANGUAGE_MAPPING[submissionInput.data.languageId]?.executor,
+        source_code: problem.fullBoilerplateCode,
         stdin: input,
         expected_output: problem.outputs[index],
         callback_url:
@@ -92,8 +92,8 @@ export async function POST(req: NextRequest) {
       })),
     },
   );
-
-  console.log(response, "response.data=============");
+ 
+  // console.log(response, "response.data=============");
 
   const submission = await db.submission.create({
     data: {
