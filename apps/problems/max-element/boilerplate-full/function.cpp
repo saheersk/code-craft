@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <climits>
 
 ##USER_CODE_HERE##
 
