@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
+from celery.result import AsyncResult
 from code.tasks import execute_submission                                              
 
 app = FastAPI()
@@ -37,7 +38,8 @@ async def receive_submissions(batch_submission: BatchSubmission):
                 submission.language_id,
                 submission.source_code,
                 submission.stdin,
-                submission.expected_output
+                submission.expected_output,
+                submission.callback_url
             )
             # print("======queue task=====")
             task_ids.append(task.id)
@@ -46,3 +48,20 @@ async def receive_submissions(batch_submission: BatchSubmission):
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error queuing submissions: {str(e)}")
+
+
+@app.get("/tasks/{task_id}")
+async def check_task_status(task_id: str):
+    try:
+        task_result = AsyncResult(task_id)
+
+        status = task_result.status
+        result = task_result.result if task_result.ready() else None
+
+        return {
+            "task_id": task_id,
+            "status": status,
+            "result": result
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error checking task status: {str(e)}")
