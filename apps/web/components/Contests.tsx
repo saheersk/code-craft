@@ -6,6 +6,7 @@ export async function Contests() {
     getUpcomingContests(),
     getExistingContests(),
   ]);
+  console.log(upcomingContests, "==upcomoing")
   return (
     <div className="min-h-screen">
       <section className="bg-white dark:bg-gray-900 py-8 md:py-12">

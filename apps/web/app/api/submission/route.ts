@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
     },
   );
  
-  // console.log(response, "response.data=============");
+  console.log(response.data.task_ids, "response.data=============");
 
   const submission = await db.submission.create({
     data: {
@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
       submissionId: submission.id,
       status: "PENDING",
       index,
-      judge0TrackingId: response.data[index].token,
+      judge0TrackingId: response.data.task_ids[index],
     })),
   });
 

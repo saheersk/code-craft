@@ -124,8 +124,9 @@ function SubmitProblem({
       return;
     }
 
+    // const response = await axios.get(`http://localhost:8000/tasks/${id}`);
     const response = await axios.get(`/api/submission/?id=${id}`);
-
+    console.log(response, "=======res")
     if (response.data.submission.status === "PENDING") {
       setTestcases(response.data.testCases);
       await new Promise((resolve) => setTimeout(resolve, 2.5 * 1000));
@@ -154,6 +155,7 @@ function SubmitProblem({
       problemId: problem.id,
       activeContestId: contestId,
     });
+    console.log(response, "==========submit res====")
     pollWithBackoff(response.data.id, 10);
   }
 
