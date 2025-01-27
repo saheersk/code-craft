@@ -54,7 +54,7 @@ function ContestsTable({ contests }: { contests: IContest[] }) {
               <TableCell>{contest.title}</TableCell>
               <TableCell>{contest.startTime.toLocaleString()}</TableCell>
               <TableCell>
-                <PrimaryButton href={`/standings/${contest.id}`}>
+                <PrimaryButton href={`/leaderboard/${contest.id}`}>
                   View
                 </PrimaryButton>
               </TableCell>

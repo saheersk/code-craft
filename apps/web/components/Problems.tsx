@@ -18,7 +18,7 @@ export async function Problems() {
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2">Popular Problems</h2>
           <p className="text-gray-500 dark:text-gray-400">
-            Check out the most popular programming problems on Code100x.
+            Check out the most popular programming problems on Code-Craft.
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -7,10 +7,10 @@ export function Hero() {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Welcome to Code100x
+              Welcome to Code-Craft
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mb-6">
-              Code100x is a platform for holding programming contests.
+              Code-Craft is a platform for holding programming contests.
               Participate in challenges, solve problems, and climb the
               leaderboard.
             </p>
@@ -36,7 +36,7 @@ export function Hero() {
               src="https://ideogram.ai/assets/image/balanced/response/OZ93FYuyRpmpgNxX0fRMSw"
               width="600"
               height="400"
-              alt="Code100x"
+              alt="Code-Craft"
               className="rounded-lg"
             />
           </div>
