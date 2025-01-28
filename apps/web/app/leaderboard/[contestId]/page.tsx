@@ -7,6 +7,7 @@ const RealTimeLeaderboard = () => {
   const { contestId } = useParams<{ contestId: string }>(); // Retrieve contestId from URL params
 
   console.log(leaderboard);
+  console.log(contestId);
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:4000");
