@@ -4,22 +4,19 @@ import prismaClient from "./db";
 import { SubmissionCallback } from "@repo/common/zod";
 import { outputMapping } from "./outputMapping";
 import { getPoints } from "./points";
+import Redis from "ioredis";
 
+const redis = new Redis();
 const app = express();
 app.use(cors()); 
 app.use(express.json());
 
-app.get("/", (req: any, res: any) => {
-  res.status(200).json({
-    message: "Hello, world!",
-  });
-})
 
 app.put("/submission-callback", async (req: any, res: any) => {
   console.log(req.body, "Incoming request body");
   const parsedBody = SubmissionCallback.safeParse(req.body);
 
-  console.log(parsedBody, "=========data");
+  // console.log(parsedBody, "=========data");
 
   if (!parsedBody.success) {
     return res.status(403).json({
@@ -112,8 +109,20 @@ app.put("/submission-callback", async (req: any, res: any) => {
           points,
         },
       });
+
+        // Create the data to publish to Redis
+        const leaderboardData = {
+          event: "leaderboard-update",
+          data: {
+            contestId: response.activeContestId,
+            score: points,
+            userId: response.userId
+          },
+        };
+
+        // Publish the updated leaderboard data to Redis
+        await redis.publish("leaderboard-update", JSON.stringify(leaderboardData));
     }
-    // increase the solve count here, or asynchronously later
   }
   res.send("Received");
 });
