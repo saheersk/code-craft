@@ -27,6 +27,7 @@ async function main(problemSlug: string) {
       title: problemSlug,
       slug: problemSlug,
       description: problemStatement,
+      hidden: false
     },
     update: {
       description: problemStatement,

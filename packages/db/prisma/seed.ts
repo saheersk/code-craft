@@ -6,6 +6,6 @@ import { LANGUAGE_MAPPING } from "@repo/common/language";
     data: Object.keys(LANGUAGE_MAPPING).map((language) => ({
       id: LANGUAGE_MAPPING[language].internal,
       name: language,
-      judge0Id: LANGUAGE_MAPPING[language].judge0,
+      judge0Id: LANGUAGE_MAPPING[language].executor,
     })),
   }))();
