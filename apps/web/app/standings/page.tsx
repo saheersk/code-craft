@@ -36,6 +36,7 @@ interface IContest {
 }
 
 function ContestsTable({ contests }: { contests: IContest[] }) {
+  console.log(contests, "====contests");
   return (
     <div className="overflow-x-auto">
       <Table>

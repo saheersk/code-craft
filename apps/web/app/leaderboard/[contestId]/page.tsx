@@ -3,39 +3,35 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const RealTimeLeaderboard = () => {
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
-  const { contestId } = useParams<{ contestId: string }>(); // Retrieve contestId from URL params
-
-  console.log(leaderboard);
-  console.log(contestId);
+  const contestId: string = useParams().contestId;
+  console.log(contestId, "====contestId");
+  const [leaderboardData, setLeaderboardData] = useState([]);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:4000");
+    const ws = new WebSocket("ws://localhost:4000"); // Adjust the URL to match your WebSocket server
 
-    // When the WebSocket is open, send the contestId request
     ws.onopen = () => {
-      ws.send(
-        JSON.stringify({ event: "request-leaderboard", contestId: contestId })
-      );
+      console.log("WebSocket connection opened");
+      ws.send(JSON.stringify({ type: "join:leaderboard", contestId }));
     };
 
-    // Listen for incoming messages from the WebSocket server
-    ws.onmessage = (message) => {
-      const data = JSON.parse(message.data);
-      if (data.event === "leaderboard-data") {
-        setLeaderboard(data.data.leaderboard); // Update leaderboard state
-      }
+    ws.onmessage = (event) => {
+      const parsedMessage = JSON.parse(event.data);
+      setLeaderboardData(parsedMessage.leaderboard);
     };
 
-    // Clean up WebSocket connection on unmount
     return () => {
       ws.close();
     };
-  }, [contestId]); // Reconnect when the contestId changes
+  }, [contestId]);
+
+  console.log(leaderboardData, "====leaderboardData");
 
   return (
     <div className="flex-grow container mx-auto mt-5 p-4">
-      <h1 className="text-2xl font-bold text-center mb-6">Real-Time Leaderboard</h1>
+      <h1 className="text-2xl font-bold text-center mb-6">
+        Real-Time Leaderboard
+      </h1>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white rounded-lg shadow">
           <thead className="bg-gray-900 text-white">
@@ -46,8 +42,11 @@ const RealTimeLeaderboard = () => {
             </tr>
           </thead>
           <tbody>
-            {leaderboard.map((user, index) => (
-              <tr key={index} className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"}`}>
+            {leaderboardData.map((user: any, index) => (
+              <tr
+                key={index}
+                className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"}`}
+              >
                 <td className="px-4 py-2 font-medium">{index + 1}</td>
                 <td className="px-4 py-2">{user.userId}</td>
                 <td className="px-4 py-2">{user.score}</td>
