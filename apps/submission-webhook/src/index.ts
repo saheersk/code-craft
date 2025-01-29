@@ -3,20 +3,15 @@ import cors from "cors";
 import prismaClient from "./db";
 import { SubmissionCallback } from "@repo/common/zod";
 import { outputMapping } from "./outputMapping";
-import { getPoints } from "./points";
-import Redis from "ioredis";
+import { handleContestSubmission, updateSubmissionStatus } from "./helper";
 
-const redis = new Redis();
 const app = express();
 app.use(cors()); 
 app.use(express.json());
 
 
 app.put("/submission-callback", async (req: any, res: any) => {
-  console.log(req.body, "Incoming request body");
   const parsedBody = SubmissionCallback.safeParse(req.body);
-
-  // console.log(parsedBody, "=========data");
 
   if (!parsedBody.success) {
     return res.status(403).json({
@@ -59,70 +54,15 @@ app.put("/submission-callback", async (req: any, res: any) => {
   // We should have another async process update the status of the submission.
   // This can also lead to a race condition where two test case webhooks are sent at the same time
   // None of them would update the status of the submission
-  if (pendingTestcases.length === 0) {
-    const accepted = failedTestcases.length === 0;
-    const response = await prismaClient.submission.update({
-      where: {
-        id: testCase.submissionId,
-      },
-      data: {
-        status: accepted ? "AC" : "REJECTED",
-        time: Math.max(
-          ...allTestcaseData.map((testcase) => Number(testcase.time || "0")),
-        ),
-        memory: Math.max(
-          ...allTestcaseData.map((testcase) => testcase.memory || 0),
-        ),
-      },
-      include: {
-        problem: true,
-        activeContest: true,
-      }
-    });
+  try {
+    const response = await updateSubmissionStatus(
+      testCase.submissionId,
+      allTestcaseData
+    );
 
-    if (response.activeContestId && response.activeContest) {
-      const points = await getPoints(
-        response.activeContestId,
-        response.userId,
-        response.problemId,
-        response.problem.difficulty,
-        response.activeContest?.startTime,
-        response.activeContest?.endTime,
-      );
-
-      await prismaClient.contestSubmission.upsert({
-        where: {
-          userId_problemId_contestId: {
-            contestId: response.activeContestId,
-            userId: response.userId,
-            problemId: response.problemId,
-          },
-        },
-        create: {
-          submissionId: response.id,
-          userId: response.userId,
-          problemId: response.problemId,
-          contestId: response.activeContestId,
-          points,
-        },
-        update: {
-          points,
-        },
-      });
-
-        // Create the data to publish to Redis
-        const leaderboardData = {
-          event: "leaderboard-update",
-          data: {
-            contestId: response.activeContestId,
-            score: points,
-            userId: response.userId
-          },
-        };
-
-        // Publish the updated leaderboard data to Redis
-        await redis.publish("leaderboard-update", JSON.stringify(leaderboardData));
-    }
+    await handleContestSubmission(response);
+  } catch (error) {
+    console.error("Error updating submission or contest data:", error);
   }
   res.send("Received");
 });
