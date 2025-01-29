@@ -1,0 +1,19 @@
+{
+  "name": "ws",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "yarn build && node dist/index.js",
+    "build": "npx esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js --external:@repo/redis-utils --external:ws",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@repo/redis-utils": "*",
+    "@types/ioredis": "^5.0.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.14"
+  }
+}
