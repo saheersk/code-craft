@@ -7,7 +7,8 @@ import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
-
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 interface User {
   id: string;
@@ -19,8 +20,17 @@ interface User {
 interface Session {
   user?: User;
 }
+const redis = new Redis({
+  url: process.env.REDIS_URL!,
+  token: undefined,
+});
 
-// TODO: This should be heavily rate limited
+// Initialize rate limiter (e.g., 5 requests per minute per user)
+const ratelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.fixedWindow(5, "60 s"), // 5 requests per minute
+});
+
 export async function POST(req: NextRequest) {
   // TODO: type
   //@ts-ignore
@@ -33,7 +43,15 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 401,
-      },
+      }
+    );
+  }
+
+  const { success } = await ratelimit.limit(session.user.id);
+  if (!success) {
+    return NextResponse.json(
+      { message: "Too many requests. Please try again later." },
+      { status: 429 }
     );
   }
 
@@ -45,10 +63,10 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 400,
-      },
+      }
     );
   }
-    console.log(submissionInput, "-==sub")
+  console.log(submissionInput, "-==sub");
   const dbProblem = await db.problem.findUnique({
     where: {
       id: submissionInput.data.problemId,
@@ -62,37 +80,34 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 404,
-      },
+      }
     );
   }
 
   const problem = await getProblem(
     dbProblem.slug,
-    submissionInput.data.languageId,
+    submissionInput.data.languageId
   );
   console.log(problem, "=======problem");
   problem.fullBoilerplateCode = problem.fullBoilerplateCode.replace(
     "##USER_CODE_HERE##",
-    submissionInput.data.code,
+    submissionInput.data.code
   );
 
   console.log(problem, "=======problem boilerplate===");
 
-  const response = await axios.post(
-    `${JUDGE0_URI}/submissions/batch`,
-    {
-      submissions: problem.inputs.map((input, index) => ({
-        language_id: LANGUAGE_MAPPING[submissionInput.data.languageId]?.executor,
-        source_code: problem.fullBoilerplateCode,
-        stdin: input,
-        expected_output: problem.outputs[index],
-        callback_url:
-          process.env.JUDGE0_CALLBACK_URL ??
-          "http://localhost:3002/submission-callback",
-      })),
-    },
-  );
- 
+  const response = await axios.post(`${JUDGE0_URI}/submissions/batch`, {
+    submissions: problem.inputs.map((input, index) => ({
+      language_id: LANGUAGE_MAPPING[submissionInput.data.languageId]?.executor,
+      source_code: problem.fullBoilerplateCode,
+      stdin: input,
+      expected_output: problem.outputs[index],
+      callback_url:
+        process.env.JUDGE0_CALLBACK_URL ??
+        "http://localhost:3002/submission-callback",
+    })),
+  });
+
   console.log(response.data.task_ids, "response.data=============");
 
   const submission = await db.submission.create({
@@ -123,13 +138,13 @@ export async function POST(req: NextRequest) {
     },
     {
       status: 200,
-    },
+    }
   );
 }
 
 export async function GET(req: NextRequest) {
   const session: Session | null = await getServerSession(authOptions);
-  console.log(session, "====session===")
+  console.log(session, "====session===");
   if (!session?.user) {
     return NextResponse.json(
       {
@@ -137,7 +152,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 401,
-      },
+      }
     );
   }
   const url = new URL(req.url);
@@ -151,7 +166,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 400,
-      },
+      }
     );
   }
 
@@ -169,7 +184,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 404,
-      },
+      }
     );
   }
 
@@ -186,6 +201,6 @@ export async function GET(req: NextRequest) {
     },
     {
       status: 200,
-    },
+    }
   );
 }
