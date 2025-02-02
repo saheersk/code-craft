@@ -20,15 +20,15 @@ interface User {
 interface Session {
   user?: User;
 }
+
 const redis = new Redis({
   url: process.env.REDIS_URL!,
   token: undefined,
 });
 
-// Initialize rate limiter (e.g., 5 requests per minute per user)
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.fixedWindow(5, "60 s"), // 5 requests per minute
+  limiter: Ratelimit.fixedWindow(5, "60 s"), 
 });
 
 export async function POST(req: NextRequest) {
