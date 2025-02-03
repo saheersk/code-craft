@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.put("/submission-callback", async (req: any, res: any) => {
   const parsedBody = SubmissionCallback.safeParse(req.body);
-
+  console.log(parsedBody, "======")
   if (!parsedBody.success) {
     return res.status(403).json({
       message: "Invalid input",
@@ -42,18 +42,6 @@ app.put("/submission-callback", async (req: any, res: any) => {
     },
   });
 
-  const pendingTestcases = allTestcaseData.filter(
-    (testcase) => testcase.status === "PENDING",
-  );
-  const failedTestcases = allTestcaseData.filter(
-    (testcase) => testcase.status !== "AC",
-  );
-
-
-  // This logic is fairly ugly
-  // We should have another async process update the status of the submission.
-  // This can also lead to a race condition where two test case webhooks are sent at the same time
-  // None of them would update the status of the submission
   try {
     const response = await updateSubmissionStatus(
       testCase.submissionId,

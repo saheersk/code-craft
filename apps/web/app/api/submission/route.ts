@@ -21,15 +21,15 @@ interface Session {
   user?: User;
 }
 
-const redis = new Redis({
-  url: process.env.REDIS_URL!,
-  token: undefined,
-});
+// const redis = new Redis({
+//   url: process.env.REDIS_URL!,
+//   token: "fjkhasdjkfhsdajkfhaljksdh",
+// });
 
-const ratelimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.fixedWindow(5, "60 s"), 
-});
+// const ratelimit = new Ratelimit({
+//   redis,
+//   limiter: Ratelimit.fixedWindow(5, "60 s"), 
+// });
 
 export async function POST(req: NextRequest) {
   // TODO: type
@@ -47,13 +47,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { success } = await ratelimit.limit(session.user.id);
-  if (!success) {
-    return NextResponse.json(
-      { message: "Too many requests. Please try again later." },
-      { status: 429 }
-    );
-  }
+  // const { success } = await ratelimit.limit(session.user.id);
+  // if (!success) {
+  //   return NextResponse.json(
+  //     { message: "Too many requests. Please try again later." },
+  //     { status: 429 }
+  //   );
+  // }
 
   const submissionInput = SubmissionInput.safeParse(await req.json());
   if (!submissionInput.success) {
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
   const languageId = submissionInput.data.languageId;
   const dbProblem = await db.problem.findUnique({
     where: {
-      id: languageId,
+      id: submissionInput.data.problemId,
     },
   });
 

@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "concurrently \"turbo dev\" \"yarn dev:python\" \"yarn dev:celery\"",
+    "dev": "turbo dev",
     "dev:python": "cd apps/executor && source venv/bin/activate && uvicorn main:app --reload",
     "dev:celery": "cd apps/executor && source venv/bin/activate && celery -A code.celery_app worker --loglevel=info",
     "lint": "turbo lint",

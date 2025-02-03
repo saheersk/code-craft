@@ -44,6 +44,7 @@ def execute_submission(self, language_id, source_code, stdin, expected_output, c
         logger.info(f"Docker command result: {result}")
         logger.info(f"Docker stdout: {result.stdout}")
         logger.info(f"Docker stderr: {result.stderr}")
+        logger.info(f"Expected stderr: {expected_output}")
 
         if result.returncode != 0:
             if result.stderr:
@@ -81,9 +82,9 @@ def execute_submission(self, language_id, source_code, stdin, expected_output, c
                 "description": description,
             },
         }
-        logger.info(f"self.request.id::   {self.request.id}")
-        logger.info(f"Result::   {result_data}")
-        logger.info(f"callback: {callback_url}")
+        # logger.info(f"self.request.id::   {self.request.id}")
+        # logger.info(f"Result::   {result_data}")
+        # logger.info(f"callback: {callback_url}")
         send_to_callback_api(callback_url, result_data)
 
         return result_data

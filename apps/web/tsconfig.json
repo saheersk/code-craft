@@ -1,6 +1,10 @@
 {
   "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
+    "baseUrl": ".", 
+    "paths": {
+      "@repo/db": ["packages/db/src"]
+    },
     "typeRoots": ["./node_modules/@types", "./types"],
     "plugins": [
       {

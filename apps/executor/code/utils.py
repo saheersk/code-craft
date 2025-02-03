@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 def send_to_callback_api(callback_url: str, result: Dict):
     try:
         response = requests.put(callback_url, json=result)
-        print(response, "==============response")
-        logger.info(response, "==============response")
+        # print(response, "==============response")
+        # logger.info(response, "==============response")
         if response.status_code == 200:
             logger.info("Successfully sent the result to the callback API")
         else:
