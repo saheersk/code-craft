@@ -69,6 +69,8 @@ export class FullProblemDefinitionParser {
 #include <string>
 #include <fstream>
 
+using namespace std; 
+
 ##USER_CODE_HERE##
 
 int main() {

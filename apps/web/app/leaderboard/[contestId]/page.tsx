@@ -8,7 +8,7 @@ const RealTimeLeaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:4000"); // Adjust the URL to match your WebSocket server
+    const ws = new WebSocket("ws://localhost:4000");
 
     ws.onopen = () => {
       console.log("WebSocket connection opened");
@@ -24,8 +24,6 @@ const RealTimeLeaderboard = () => {
       ws.close();
     };
   }, [contestId]);
-
-  console.log(leaderboardData, "====leaderboardData");
 
   return (
     <div className="flex-grow container mx-auto mt-5 p-4">

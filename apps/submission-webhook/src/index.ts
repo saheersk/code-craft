@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.put("/submission-callback", async (req: any, res: any) => {
   const parsedBody = SubmissionCallback.safeParse(req.body);
-  console.log(parsedBody, "======")
+  
   if (!parsedBody.success) {
     return res.status(403).json({
       message: "Invalid input",
