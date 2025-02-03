@@ -26,10 +26,13 @@ const fetchLeaderboard = async (contestId: string) => {
   }, []);
 };
 
-redisSubscriber.on("pmessage", async (pattern, channel) => {
+redisSubscriber.on("pmessage", async (pattern, channel, msg) => {
   const contestId = channel.split(":")[3];
+  const message = JSON.parse(msg) // message
   try {
+    console.log(message, "===message")
     const leaderboard = await fetchLeaderboard(contestId);
+    // const leaderboard = await updateLeaderboardScore(message.data.constestId, message.data.userId, message.data.score);
     console.log("Updated Leaderboard:", leaderboard);
 
     wss.clients.forEach((client) => {
@@ -45,6 +48,7 @@ redisSubscriber.on("pmessage", async (pattern, channel) => {
 wss.on("connection", (ws) => {
   ws.on("message", async (message: any) => {
     const { type, contestId } = JSON.parse(message);
+    console.log(contestId, "id====")
     if (type === "join:leaderboard") {
       try {
         const leaderboard = await fetchLeaderboard(contestId);

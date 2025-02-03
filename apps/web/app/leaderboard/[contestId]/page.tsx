@@ -4,24 +4,38 @@ import { useState, useEffect } from "react";
 
 const RealTimeLeaderboard = () => {
   const contestId: string = useParams().contestId as string;
-  console.log(contestId, "====contestId");
   const [leaderboardData, setLeaderboardData] = useState([]);
 
   useEffect(() => {
+    if (!contestId) return;
+  
     const ws = new WebSocket("ws://localhost:4000");
-
+  
     ws.onopen = () => {
       console.log("WebSocket connection opened");
-      ws.send(JSON.stringify({ type: "join:leaderboard", contestId }));
+      setTimeout(() => {
+        ws.send(JSON.stringify({ type: "join:leaderboard", contestId }));
+      }, 100);
     };
-
+  
     ws.onmessage = (event) => {
       const parsedMessage = JSON.parse(event.data);
+      console.log(parsedMessage, "===message");
       setLeaderboardData(parsedMessage.leaderboard);
     };
-
+  
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  
+    ws.onclose = (event) => {
+      console.log("WebSocket closed:", event);
+    };
+  
     return () => {
-      ws.close();
+      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+        ws.close();
+      }
     };
   }, [contestId]);
 
