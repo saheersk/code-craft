@@ -1,11 +1,18 @@
-from celery import Celery
+import os
 import logging
+from celery import Celery
+from dotenv import load_dotenv
 
+
+load_dotenv()
+
+BROKER_URL = os.getenv("BROKER_URL", "redis://127.0.0.1:6379/0")
+BACKEND_URL = os.getenv("BACKEND_URL", "redis://127.0.0.1:6379/0")
 
 celery_app = Celery(
     "tasks",
-    broker="redis://127.0.0.1:6379/0",
-    backend="redis://127.0.0.1:6379/0",
+    broker=BROKER_URL,
+    backend=BACKEND_URL,
     broker_connection_retry_on_startup=True
 )
 
@@ -18,7 +25,6 @@ celery_app.conf.update(
 )
 
 celery_app.autodiscover_tasks(["code"])
-
 
 # Setup logging
 logging.basicConfig(

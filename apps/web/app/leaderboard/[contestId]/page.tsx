@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const RealTimeLeaderboard = () => {
-  const contestId: string = useParams().contestId;
+  const contestId: string = useParams().contestId as string;
   console.log(contestId, "====contestId");
   const [leaderboardData, setLeaderboardData] = useState([]);
 

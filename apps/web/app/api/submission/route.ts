@@ -67,9 +67,10 @@ export async function POST(req: NextRequest) {
     );
   }
   console.log(submissionInput, "-==sub");
+  const languageId = submissionInput.data.languageId;
   const dbProblem = await db.problem.findUnique({
     where: {
-      id: submissionInput.data.problemId,
+      id: languageId,
     },
   });
 
@@ -86,7 +87,7 @@ export async function POST(req: NextRequest) {
 
   const problem = await getProblem(
     dbProblem.slug,
-    submissionInput.data.languageId
+    languageId
   );
   console.log(problem, "=======problem");
   problem.fullBoilerplateCode = problem.fullBoilerplateCode.replace(

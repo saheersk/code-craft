@@ -7,7 +7,6 @@ from code.tasks import execute_submission
 app = FastAPI()
 
 
-# Define the structure of the incoming data
 class Submission(BaseModel):
     language_id: int
     source_code: str

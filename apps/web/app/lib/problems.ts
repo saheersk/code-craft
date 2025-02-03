@@ -1,6 +1,6 @@
 import fs from "fs";
 
-type SUPPORTED_LANGS = "js" | "cpp" | "rs";
+type SUPPORTED_LANGS = "js" | "cpp" | "rs" | "py";
 
 interface Problem {
   id: string;

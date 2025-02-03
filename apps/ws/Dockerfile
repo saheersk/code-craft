@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-WORKDIR /usr/src/submission-webhook
+WORKDIR /usr/src/ws
 
 RUN apk add --no-cache python3 make g++ openssl \
     && npm install -g typescript
@@ -13,6 +13,6 @@ COPY . ./
 
 RUN yarn build --verbose
 
-EXPOSE 3000
+EXPOSE 3002
 
 CMD ["yarn", "start"]
