@@ -47,6 +47,11 @@ export const getProblems = async () => {
     },
     include: {
       defaultCode: true,
+      _count: {
+        select: {
+          submissions: true,
+        },
+      },
     },
   });
   return problems;

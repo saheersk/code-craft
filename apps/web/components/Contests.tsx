@@ -14,7 +14,7 @@ export async function Contests() {
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-2">Upcoming Contests</h2>
             <p className="text-gray-500 dark:text-gray-400">
-              Check out the upcoming programming contests on Codeforces.
+              Check out the upcoming programming contests on Code-Craft.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -36,7 +36,7 @@ export async function Contests() {
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-2">Previous Contests</h2>
             <p className="text-gray-500 dark:text-gray-400">
-              Check out the previous programming contests on Codeforces.
+              Check out the previous programming contests on Code-Craft.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

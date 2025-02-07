@@ -32,11 +32,11 @@ export async function Problems() {
 }
 
 function ProblemCard({ problem }: { problem: any }) {
+  console.log(problem, "===pproblem")
   return (
     <Card>
       <CardHeader>
         <CardTitle>{problem.title}</CardTitle>
-        <CardDescription>Easy problem for beginners</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center justify-between">
@@ -46,7 +46,7 @@ function ProblemCard({ problem }: { problem: any }) {
           </div>
           <div>
             <p className="text-gray-500 dark:text-gray-400">Submissions</p>
-            <p>{problem.solved}</p>
+            <p>{problem._count.submissions}</p>
           </div>
         </div>
       </CardContent>

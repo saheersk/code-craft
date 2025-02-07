@@ -14,7 +14,7 @@ interface ProblemRowProps {
   id: string;
   title: string;
   difficulty: string;
-  submissionCount: number;
+  // submissionCount: number;
   contestId: string;
   points: number;
 }
@@ -56,7 +56,7 @@ export const ContestProblemsTable = ({
                   <TableRow>
                     <TableHead>Problem</TableHead>
                     <TableHead>Difficulty</TableHead>
-                    <TableHead>Solved</TableHead>
+                    {/* <TableHead>Solved</TableHead> */}
                     <TableHead>Your status</TableHead>
                     <TableHead>Solve</TableHead>
                   </TableRow>
@@ -74,7 +74,7 @@ export const ContestProblemsTable = ({
                       id={problem.id}
                       title={problem.title}
                       difficulty={problem.difficulty}
-                      submissionCount={problem.solved}
+                      // submissionCount={problem.solved}
                     />
                   ))}
                 </TableBody>
@@ -91,7 +91,7 @@ function ProblemRow({
   id,
   title,
   difficulty,
-  submissionCount,
+  // submissionCount,
   contestId,
   points,
 }: ProblemRowProps) {
@@ -107,11 +107,11 @@ function ProblemRow({
           <span className="font-medium">{difficulty}</span>
         </div>
       </TableCell>
-      <TableCell>
+      {/* <TableCell>
         <div className="text-sm text-gray-500">
           <span className="font-medium">{submissionCount}</span>
         </div>
-      </TableCell>
+      </TableCell> */}
       <TableCell>
         <div className="text-sm text-gray-500">
           <span className="font-medium">
