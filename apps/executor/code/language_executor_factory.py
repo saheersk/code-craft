@@ -54,7 +54,8 @@ class CppExecutor(LanguageExecutor):
             "--network=none", "gcc:latest",
             "bash", "-c", "g++ /sandbox/script.cpp -o /sandbox/output && /sandbox/output < /sandbox/input.txt"
         ]
-        return subprocess.run(run_command, text=True, capture_output=True, timeout=30)
+        return subprocess.run(run_command, text=True, capture_output=True,
+                              timeout=30)
 
 
 class PythonExecutor(LanguageExecutor):
@@ -78,7 +79,8 @@ class PythonExecutor(LanguageExecutor):
             "--network=none", "python:3.11-alpine",
             "python", "/sandbox/script.py"
         ]
-        return subprocess.run(run_command, text=True, capture_output=True, timeout=30)
+        return subprocess.run(run_command, text=True, capture_output=True,
+                              timeout=30)
 
 
 class RustExecutor(LanguageExecutor):
@@ -98,9 +100,11 @@ class RustExecutor(LanguageExecutor):
             "-v", f"{sandbox_dir}:/sandbox",
             "--memory=128m", "--cpus=0.5",
             "--network=none", "rust:latest",
-            "bash", "-c", "rustc /sandbox/script.rs -o /sandbox/output && /sandbox/output < /sandbox/input.txt"
+            "bash", "-c",
+            "rustc /sandbox/script.rs -o /sandbox/output && /sandbox/output < /sandbox/input.txt"
         ]
-        return subprocess.run(run_command, text=True, capture_output=True, timeout=30)  
+        return subprocess.run(run_command, text=True, capture_output=True,
+                              timeout=30)  
 
 
 class LanguageExecutorFactory:

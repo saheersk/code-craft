@@ -7,28 +7,28 @@ services:
     # depends_on:
     #   - backend
 
-  executor:
-    build:
-      context: ../apps/executor
-    env_file:
-     - ../apps/executor/.env
-    ports:
-      - "8000:8000"
-    depends_on:
-      - redis
+  # executor:
+  #   build:
+  #     context: ../apps/executor
+  #   env_file:
+  #    - ../apps/executor/.env
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - redis
 
-  redis:
-    image: redis:latest
-    restart: always
-    ports:
-      - "6379:6379"
+  # redis:
+  #   image: redis:latest
+  #   restart: always
+  #   ports:
+  #     - "6379:6379"
 
-  celery_worker:
-    build:
-      context: ../apps/executor
-    command: celery -A code.celery_app worker --loglevel=info
-    depends_on:
-      - redis
-      - executor
+  # celery_worker:
+  #   build:
+  #     context: ../apps/executor
+  #   command: celery -A code.celery_app worker --loglevel=info
+  #   depends_on:
+  #     - redis
+  #     - executor
 
 

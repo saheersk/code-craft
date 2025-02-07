@@ -36,13 +36,13 @@ export async function updateSubmissionStatus(
       return;
     }
   
-    // Fetch the current score for the user and the given problem in the contest
     const currentScoreStr = await redisClient.zscore(
       `contest:leaderboard:${response.activeContestId}`,
       response.user.name
     );
-    // if(currentScore)
-    const currentScore = parseFloat(currentScoreStr) || 0; // Ensure it's a valid number, default to 0 if not
+
+    const currentScore = currentScoreStr ? parseFloat(currentScoreStr) : 0;
+    console.log(currentScore, "======")
     console.log(currentScore, "currentScore");
     const points = await getPoints(
       response.activeContestId,
@@ -53,8 +53,6 @@ export async function updateSubmissionStatus(
       response.activeContest.endTime
     );
   console.log(points, "points")
-    // Check if the current score exists and if the problemId has been attempted before
-    // If this is a new problem or a new score for the user, update the leaderboard
     await updatePoints(
       response.activeContestId,
       response.problemId,
@@ -66,32 +64,13 @@ export async function updateSubmissionStatus(
       event: "leaderboard-update",
       data: {
         contestId: response.activeContestId,
-        score: points, // Update with the calculated points
+        score: points,
         userId: response.user.name,
       },
     };
     
-    if (currentScore === null || !await hasAttemptedProblem(response.userId, response.activeContestId, response.problemId)) {
-      await redisClient.zadd(`contest:leaderboard:${response.activeContestId}`, points, response.user.name);
-      // Publish an update to the leaderboard channel
-     
-    }else {
-
-      await redisClient.zadd(
-        `contest:leaderboard:${response.activeContestId}`,
-        (currentScore + points),
-        response.user.name
-      );
-    }
-
-    await redisClient.publish(
-      `contest:leaderboard:update:${response.activeContestId}`,
-      JSON.stringify(leaderboardData)
-    );
+    console.log('=================new=====================');
   
-    console.log(response);
-  
-    // Upsert the contest submission in the database
     await prismaClient.contestSubmission.upsert({
       where: {
         userId_problemId_contestId: {
@@ -109,20 +88,29 @@ export async function updateSubmissionStatus(
       },
       update: { points },
     });
+    const totalScore = await UserContestScore(response.userId, response.activeContestId, response.problemId)
+    await redisClient.zadd(`contest:leaderboard:${response.activeContestId}`,  totalScore, response.user.name);
+    await redisClient.publish(
+      `contest:leaderboard:update:${response.activeContestId}`,
+      JSON.stringify(leaderboardData)
+    );
   }
   
-  // Helper function to check if the user has already attempted the given problem in the contest
-  async function hasAttemptedProblem(userId: string, contestId: string, problemId: string): Promise<boolean> {
-    const existingSubmission = await prismaClient.contestSubmission.findUnique({
+  async function UserContestScore(userId: string, contestId: string, problemId: string): Promise<number> {
+    const submissions = await prismaClient.contestSubmission.findMany({
       where: {
-        userId_problemId_contestId: {
-          contestId,
-          userId,
-          problemId,
-        },
+        contestId,
+        userId,
+      },
+      select: {
+        points: true,
       },
     });
-  
-    return existingSubmission !== null;
+    
+    const totalScore = submissions.reduce((acc, curr) => acc + curr.points, 0);
+    
+    console.log("Total Score:", totalScore);
+
+    return totalScore
   }
   

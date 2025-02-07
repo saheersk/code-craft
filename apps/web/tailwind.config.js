@@ -7,6 +7,8 @@ export default {
 		'./app/**/*.{ts,tsx}',
 		'./src/**/*.{ts,tsx}',
 		'../../packages/ui/**/*.{ts,tsx}',
+		"!../../packages/ui/node_modules/**",
+		"!../../packages/db/node_modules/**"
 	  ],
   theme: {
   	extend: {
