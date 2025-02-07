@@ -1,8 +1,15 @@
-import { useParams } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import { Contest } from "../../../components/Contest";
 
 
-export default function ContestPage({ params }: { params: { id: string } }) {
+export default async function ContestPage({ params }: { params: { id: string } }) {
+  const session = await getServerSession();
+
+  if (!session) {
+    redirect("/api/auth/signin"); 
+  }
+
   if (!params.id) {
     return <div>Contest doesn't exist...</div>;
   }

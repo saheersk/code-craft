@@ -1,3 +1,5 @@
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import { ProblemStatement } from "../../../components/ProblemStatement";
 import { ProblemSubmitBar } from "../../../components/ProblemSubmitBar";
 import { getProblem } from "../../db/problem";
@@ -10,6 +12,12 @@ export default async function ProblemPage({
   };
 }) {
   const problem = await getProblem(problemId);
+  const session = await getServerSession();
+  
+    if (!session) {
+      redirect("/api/auth/signin"); 
+    }
+  
 
   if (!problem) {
     return <div>Problem not found</div>;
