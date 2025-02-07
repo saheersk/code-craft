@@ -10,4 +10,19 @@ Input
 ```
 
 Output
+
+```
 5
+````
+
+Input
+
+```
+If arr is empty.
+```
+
+Output
+
+```
+0
+````
