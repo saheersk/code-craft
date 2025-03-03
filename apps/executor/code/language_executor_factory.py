@@ -1,6 +1,6 @@
 import os
-from abc import ABC, abstractmethod
 import subprocess
+from abc import ABC, abstractmethod
 
 
 class LanguageExecutor(ABC):
@@ -52,7 +52,8 @@ class CppExecutor(LanguageExecutor):
             "-v", f"{sandbox_dir}:/sandbox",
             "--memory=128m", "--cpus=0.5",
             "--network=none", "gcc:latest",
-            "bash", "-c", "g++ /sandbox/script.cpp -o /sandbox/output && /sandbox/output < /sandbox/input.txt"
+            "bash", "-c",
+            "g++ /sandbox/script.cpp -o /sandbox/output && /sandbox/output < /sandbox/input.txt"
         ]
         return subprocess.run(run_command, text=True, capture_output=True,
                               timeout=30)

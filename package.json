@@ -7,7 +7,9 @@
     "dev:python": "cd apps/executor && source venv/bin/activate && uvicorn main:app --reload",
     "dev:celery": "cd apps/executor && source venv/bin/activate && celery -A code.celery_app worker --loglevel=info",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "db:generate": "cd packages/db && npx prisma generate && cd ../..",
+    "start:web": "cd apps/web && yarn run start"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

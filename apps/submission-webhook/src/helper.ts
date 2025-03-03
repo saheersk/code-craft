@@ -88,12 +88,14 @@ export async function updateSubmissionStatus(
       },
       update: { points },
     });
-    const totalScore = await UserContestScore(response.userId, response.activeContestId, response.problemId)
-    await redisClient.zadd(`contest:leaderboard:${response.activeContestId}`,  totalScore, response.user.name);
-    await redisClient.publish(
-      `contest:leaderboard:update:${response.activeContestId}`,
-      JSON.stringify(leaderboardData)
-    );
+    if(response.status == 'AC'){
+      const totalScore = await UserContestScore(response.userId, response.activeContestId, response.problemId)
+      await redisClient.zadd(`contest:leaderboard:${response.activeContestId}`,  totalScore, response.user.name);
+      await redisClient.publish(
+        `contest:leaderboard:update:${response.activeContestId}`,
+        JSON.stringify(leaderboardData)
+      );
+    }
   }
   
   async function UserContestScore(userId: string, contestId: string, problemId: string): Promise<number> {

@@ -47,7 +47,7 @@ app.put("/submission-callback", async (req: any, res: any) => {
       testCase.submissionId,
       allTestcaseData
     );
-
+    console.log(response, "===res")
     await handleContestSubmission(response);
   } catch (error) {
     console.error("Error updating submission or contest data:", error);
