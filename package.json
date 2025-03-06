@@ -8,8 +8,9 @@
     "dev:celery": "cd apps/executor && source venv/bin/activate && celery -A code.celery_app worker --loglevel=info",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "db:generate": "cd packages/db && npx prisma generate && cd ../..",
-    "start:web": "cd apps/web && yarn run start"
+    "db:generate": "npx prisma generate --schema=packages/db/prisma/schema.prisma",
+    "start:web": "cd apps/web && yarn run start",
+    "start:sub": "cd apps/submission-webhook && yarn run start"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

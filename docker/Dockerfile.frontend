@@ -2,7 +2,6 @@ FROM node:22-alpine
 
 WORKDIR /usr/src/app
 
-ARG DATABASE_URL
 COPY ./packages ./packages
 COPY ./packages/db/.env ./packages/db/.env
 COPY ./yarn.lock ./yarn.lock
@@ -15,7 +14,7 @@ COPY ./apps/web/.env ./apps/web/.env
 
 RUN yarn install
 RUN yarn run db:generate
-RUN DATABASE_URL=${DATABASE_URL} yarn run build
+RUN yarn run build
 
 EXPOSE 3000
 

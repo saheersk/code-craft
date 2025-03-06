@@ -5,14 +5,21 @@ WORKDIR /usr/src/ws
 RUN apk add --no-cache python3 make g++ openssl \
     && npm install -g typescript
 
-COPY package*.json ./
+COPY ./packages ./packages
+COPY ./packages/db/.env ./packages/db/.env
+COPY ./yarn.lock ./yarn.lock
+
+COPY ./package.json ./package.json
+COPY ./turbo.json ./turbo.json
+
+COPY ./apps/ws ./apps/ws
 
 RUN yarn install
+RUN yarn run db:generate
+RUN yarn run build
 
-COPY . ./
+EXPOSE 4000
 
-RUN yarn build --verbose
+WORKDIR /usr/src/ws/apps/ws
 
-EXPOSE 3002
-
-CMD ["yarn", "start"]
+CMD ["yarn", "run", "start"]
