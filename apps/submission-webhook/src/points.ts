@@ -1,4 +1,4 @@
-import db from "./db";
+import db from "./db"; 
 
 const POINT_MAPPING: Record<string, number> = {
   EASY: 250,

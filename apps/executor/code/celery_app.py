@@ -37,8 +37,7 @@ logger = logging.getLogger(__name__)
 
 celery_app.conf.update(
     worker_log_format="%(asctime)s - %(levelname)s - %(message)s",
-    worker_task_log_format=(
-        "%(asctime)s - %(levelname)s - %(task_name)s - %(message)s"
+    worker_task_log_format=("%(asctime)s - %(levelname)s - %(task_name)s - %(message)s"
     )
 )
 
