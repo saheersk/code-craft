@@ -1,0 +1,1 @@
+{"root":["./declarations.d.ts","./src/helper.ts","./src/index.ts","./src/outputmapping.ts","./src/points.ts","./src/updatepoints.ts","./src/db/contest.ts","./src/db/index.ts"],"version":"5.7.3"}

@@ -1,4 +1,4 @@
-import prismaClient from "./db";
+import prisma from "./db";
 import { getPoints } from "./points";
 import { updatePoints } from "./updatePoints";
 import { redisClient } from "@repo/redis-utils";
@@ -12,7 +12,7 @@ export async function updateSubmissionStatus(
       (testcase) => testcase.status === "AC"
     );
   
-    return await prismaClient.submission.update({
+    return await prisma.submission.update({
       where: { id: submissionId },
       data: {
         status: accepted ? "AC" : "REJECTED",
@@ -71,7 +71,7 @@ export async function updateSubmissionStatus(
     
     console.log('=================new=====================');
   
-    await prismaClient.contestSubmission.upsert({
+    await prisma.contestSubmission.upsert({
       where: {
         userId_problemId_contestId: {
           contestId: response.activeContestId,
@@ -99,7 +99,7 @@ export async function updateSubmissionStatus(
   }
   
   async function UserContestScore(userId: string, contestId: string, problemId: string): Promise<number> {
-    const submissions = await prismaClient.contestSubmission.findMany({
+    const submissions = await prisma.contestSubmission.findMany({
       where: {
         contestId,
         userId,
@@ -109,7 +109,7 @@ export async function updateSubmissionStatus(
       },
     });
     
-    const totalScore = submissions.reduce((acc, curr) => acc + curr.points, 0);
+    const totalScore = submissions.reduce((acc: any, curr: any) => acc + curr.points, 0);
     
     console.log("Total Score:", totalScore);
 
