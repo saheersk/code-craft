@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^6.3.0",
+    "@prisma/client": "^6.4.1",
     "prisma": "^6.3.0"
   },
   "exports": {
@@ -25,5 +25,8 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js"
     }
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9"
   }
 }
